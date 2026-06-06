@@ -244,7 +244,8 @@
 
     <button class="control-button" onclick="checkAnswer()">Check</button>
     <button class="control-button" onclick="resetGuess()">Reset</button>
-    <button class="control-button" onclick="toggleHistory()">History</button>
+    <button class="control-button" onclick="toggleHistory()">Hint</button>
+    <button class="control-button" onclick="giveUp()">Give Up</button>
   </div>
 
   <div id="newGameArea">
@@ -368,7 +369,16 @@
 
       answerDiv.classList.add("win");
     }
+    function giveUp() {
+      document.getElementById("result").innerHTML = "GIVE UP!";
 
+      document.getElementById("playButtons").style.display = "none";
+      document.getElementById("newGameArea").style.display = "block";
+      document.getElementById("attempt").style.display = "none";
+      document.getElementById("history").style.display = "none";
+
+      showAnswer();
+    }
     function resetGuess() {
       guess = [];
       document.getElementById("result").innerHTML = "";
