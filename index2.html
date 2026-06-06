@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can Game</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3efe5;
+      text-align: center;
+      margin: 0;
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin: 10px 0 18px;
+    }
+
+    .game-area {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: nowrap;
+      margin-bottom: 22px;
+    }
+
+    .box {
+      width: 44vw;
+      max-width: 260px;
+      min-height: 300px;
+      background: white;
+      border: 4px solid #333;
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 6px 6px 0 #333;
+      box-sizing: border-box;
+    }
+
+    .box h2 {
+      font-size: 20px;
+      margin: 8px 0 18px;
+    }
+
+    .can {
+      width: 96px;
+      height: 44px;
+      margin: 9px auto;
+      border: 3px solid #222;
+      border-radius: 22px;
+      position: relative;
+      box-shadow:
+        inset 9px 0 rgba(255,255,255,0.45),
+        inset -9px 0 rgba(0,0,0,0.18),
+        0 4px 0 rgba(0,0,0,0.25);
+    }
+
+    .can::before {
+      content: "";
+      position: absolute;
+      top: -7px;
+      left: 11px;
+      width: 70px;
+      height: 12px;
+      background: rgba(255,255,255,0.55);
+      border: 3px solid #222;
+      border-radius: 50%;
+    }
+
+    .can::after {
+      content: "";
+      position: absolute;
+      bottom: -7px;
+      left: 11px;
+      width: 70px;
+      height: 12px;
+      background: rgba(0,0,0,0.12);
+      border: 3px solid #222;
+      border-radius: 50%;
+    }
+
+    .can-button {
+      width: 72px;
+      height: 46px;
+      border-radius: 22px;
+      border: 3px solid #222;
+      margin: 6px;
+      cursor: pointer;
+      position: relative;
+      box-shadow:
+        inset 8px 0 rgba(255,255,255,0.45),
+        inset -8px 0 rgba(0,0,0,0.18),
+        0 4px 0 rgba(0,0,0,0.25);
+    }
+
+    .can-button::before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 9px;
+      width: 48px;
+      height: 10px;
+      background: rgba(255,255,255,0.55);
+      border: 2px solid #222;
+      border-radius: 50%;
+    }
+
+    .red { background: #e74c3c; }
+    .blue { background: #3498db; }
+    .yellow { background: #f1c40f; }
+    .green { background: #2ecc71; }
+
+    .control-button {
+      font-size: 18px;
+      padding: 10px 15px;
+      margin: 7px;
+      border-radius: 10px;
+      border: 2px solid #333;
+      cursor: pointer;
+      background: white;
+      box-shadow: 4px 4px 0 #333;
+    }
+
+    #result {
+      font-size: 32px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    #attempt {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #history {
+      font-size: 18px;
+      margin-top: 14px;
+      font-weight: bold;
+    }
+
+    .history-item {
+      background: white;
+      border: 2px solid #333;
+      border-radius: 12px;
+      margin: 8px auto;
+      padding: 8px;
+      width: 90%;
+      max-width: 460px;
+    }
+
+    .win {
+      animation: flash 0.5s infinite;
+    }
+
+    @keyframes flash {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    #newGameArea {
+      display: none;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 390px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      .game-area {
+        gap: 8px;
+      }
+
+      .box {
+        width: 46vw;
+        min-height: 300px;
+        padding: 8px;
+      }
+
+      .box h2 {
+        font-size: 17px;
+      }
+
+      .can {
+        width: 82px;
+        height: 40px;
+      }
+
+      .can::before,
+      .can::after {
+        width: 58px;
+        left: 9px;
+      }
+
+      .can-button {
+        width: 62px;
+        height: 42px;
+      }
+
+      .can-button::before {
+        width: 40px;
+      }
+
+      .control-button {
+        font-size: 16px;
+        padding: 9px 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Can Game</h1>
+
+  <div class="game-area">
+    <div class="box">
+      <h2>Hidden Sample</h2>
+      <div id="answer">????</div>
+    </div>
+
+    <div class="box">
+      <h2>Your Stack</h2>
+      <div id="stack"></div>
+    </div>
+  </div>
+
+  <div id="playButtons">
+    <button class="can-button red" onclick="addCan('red')"></button>
+    <button class="can-button blue" onclick="addCan('blue')"></button>
+    <button class="can-button yellow" onclick="addCan('yellow')"></button>
+    <button class="can-button green" onclick="addCan('green')"></button>
+
+    <br>
+
+    <button class="control-button" onclick="checkAnswer()">Check</button>
+    <button class="control-button" onclick="resetGuess()">Reset</button>
+    <button class="control-button" onclick="toggleHistory()">History</button>
+  </div>
+
+  <div id="newGameArea">
+    <button class="control-button" onclick="newGame()">New Game</button>
+  </div>
+
+  <p id="result"></p>
+  <p id="attempt">Attempt: 0</p>
+
+  <div id="history" style="display:none;"></div>
+
+  <script>
+    const colors = ["red", "blue", "yellow", "green"];
+
+    let answer = [];
+    let guess = [];
+    let attempt = 0;
+    let history = [];
+
+    function makeAnswer() {
+      answer = [...colors];
+
+      for (let i = answer.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [answer[i], answer[j]] = [answer[j], answer[i]];
+      }
+
+      console.log("answer:", answer);
+    }
+
+    makeAnswer();
+
+    function addCan(color) {
+      if (guess.length >= 4) return;
+
+      guess.push(color);
+      renderStack();
+    }
+
+    function renderStack() {
+      const stack = document.getElementById("stack");
+      stack.innerHTML = "";
+
+      for (const color of guess) {
+        const can = document.createElement("div");
+        can.className = "can " + color;
+        stack.appendChild(can);
+      }
+    }
+
+    function checkAnswer() {
+      if (guess.length < 4) {
+        document.getElementById("result").innerHTML = "Stack 4 cans!";
+        return;
+      }
+
+      attempt++;
+      document.getElementById("attempt").innerHTML = "Attempt: " + attempt;
+
+      const right = countRight();
+      const wrongPlace = countWrongPlace();
+
+      history.push({
+        guess: [...guess],
+        right: right,
+        wrongPlace: wrongPlace
+      });
+
+      if (right === 4) {
+        document.getElementById("result").innerHTML =
+          "GOT IT!<br>Attempts: " + attempt;
+
+        document.getElementById("playButtons").style.display = "none";
+        document.getElementById("newGameArea").style.display = "block";
+        document.getElementById("attempt").style.display = "none";
+        document.getElementById("history").style.display = "none";
+
+        showAnswer();
+      } else if (right === 1) {
+        document.getElementById("result").innerHTML = "One Right";
+      } else {
+        document.getElementById("result").innerHTML = right + " Right";
+      }
+
+      renderHistory();
+    }
+
+    function countRight() {
+      let right = 0;
+
+      for (let i = 0; i < 4; i++) {
+        if (guess[i] === answer[i]) {
+          right++;
+        }
+      }
+
+      return right;
+    }
+
+    function countWrongPlace() {
+      let count = 0;
+
+      for (let i = 0; i < 4; i++) {
+        if (guess[i] !== answer[i] && answer.includes(guess[i])) {
+          count++;
+        }
+      }
+
+      return count;
+    }
+
+    function showAnswer() {
+      const answerDiv = document.getElementById("answer");
+      answerDiv.innerHTML = "";
+
+      for (const color of answer) {
+        const can = document.createElement("div");
+        can.className = "can " + color;
+        answerDiv.appendChild(can);
+      }
+
+      answerDiv.classList.add("win");
+    }
+
+    function resetGuess() {
+      guess = [];
+      document.getElementById("result").innerHTML = "";
+      renderStack();
+    }
+
+    function newGame() {
+      makeAnswer();
+
+      guess = [];
+      attempt = 0;
+      history = [];
+
+      document.getElementById("stack").innerHTML = "";
+      document.getElementById("answer").innerHTML = "????";
+      document.getElementById("answer").classList.remove("win");
+
+      document.getElementById("result").innerHTML = "";
+      document.getElementById("attempt").innerHTML = "Attempt: 0";
+      document.getElementById("attempt").style.display = "block";
+
+      document.getElementById("history").innerHTML = "";
+      document.getElementById("history").style.display = "none";
+
+      document.getElementById("playButtons").style.display = "block";
+      document.getElementById("newGameArea").style.display = "none";
+    }
+
+    function toggleHistory() {
+      const historyDiv = document.getElementById("history");
+
+      if (historyDiv.style.display === "none") {
+        historyDiv.style.display = "block";
+        renderHistory();
+      } else {
+        historyDiv.style.display = "none";
+      }
+    }
+
+    function renderHistory() {
+      const historyDiv = document.getElementById("history");
+      historyDiv.innerHTML = "<h2>History</h2>";
+
+      for (let i = 0; i < history.length; i++) {
+        const item = history[i];
+
+        const div = document.createElement("div");
+        div.className = "history-item";
+
+        div.innerHTML =
+          "Attempt " + (i + 1) + ": " +
+          item.guess.join(" ") +
+          " -> " +
+          item.right + " Right / " +
+          item.wrongPlace + " Wrong Place";
+
+        historyDiv.appendChild(div);
+      }
+    }
+  </script>
+
+</body>
+</html>
